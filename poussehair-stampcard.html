@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poussehair スタンプカード</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f9f8f4;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Georgia', serif;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .stamp-display {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+    .stamp-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .stamp {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #ccc;
+    }
+    .stamp.filled {
+      background-color: #8bc34a;
+    }
+    button {
+      background-color: #8bc34a;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    .qr-instruction {
+      font-size: 14px;
+      margin-top: 30px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Poussehair</h1>
+    <p class="stamp-display">スタンプ：<span id="stampCount">0</span> / 40</p>
+    <div class="stamp-boxes" id="stampBoxes"></div>
+    <div>
+      <button onclick="addStamp(1)">+1 スタンプ</button>
+      <button onclick="addStamp(5)">+5 スタンプ</button>
+      <button onclick="resetStamps()">リセット</button>
+    </div>
+    <p class="qr-instruction">※この画面をお客様が提示し、スタッフがスタンプを追加してください</p>
+  </div>
+
+  <script>
+    const stampCountEl = document.getElementById('stampCount');
+    const stampBoxesEl = document.getElementById('stampBoxes');
+    let stampCount = parseInt(localStorage.getItem('poussehair_stamps')) || 0;
+
+    function updateDisplay() {
+      stampCountEl.textContent = stampCount;
+      stampBoxesEl.innerHTML = '';
+      for (let i = 0; i < 40; i++) {
+        const box = document.createElement('div');
+        box.className = 'stamp' + (i < stampCount ? ' filled' : '');
+        stampBoxesEl.appendChild(box);
+      }
+    }
+
+    function addStamp(num) {
+      stampCount = Math.min(40, stampCount + num);
+      localStorage.setItem('poussehair_stamps', stampCount);
+      updateDisplay();
+    }
+
+    function resetStamps() {
+      if (confirm('スタンプをリセットしますか？')) {
+        stampCount = 0;
+        localStorage.setItem('poussehair_stamps', stampCount);
+        updateDisplay();
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
